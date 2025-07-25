@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,8 +22,10 @@ lead_zone_start = np.min(lead_zone)
 lead_zone_end = np.max(lead_zone)
 
 st.subheader("Optimal leading zone")
-st.markdown(f"**Maximum lead points accrue between:**  
-:orange[**{lead_zone_start:.1f} km**] and :orange[**{lead_zone_end:.1f} km**] of the task")
+st.markdown(
+    f"**Maximum lead points accrue between:**  \n"
+    f":orange[**{lead_zone_start:.1f} km**] and :orange[**{lead_zone_end:.1f} km**] of the task"
+)
 
 # Побудова графіка
 fig, ax = plt.subplots(figsize=(8, 3))
@@ -38,7 +39,7 @@ ax.grid(True)
 ax.legend()
 st.pyplot(fig)
 
-st.markdown("""
-This calculator estimates where in the task distance the maximum LC weight is applied.
-Values are based on a Gaussian model used in GAP scoring.
-""")
+st.markdown(
+    "This calculator estimates where in the task distance the maximum LC weight is applied.  \n"
+    "Values are based on a Gaussian model used in GAP scoring."
+)
