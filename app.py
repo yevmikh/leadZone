@@ -4,27 +4,32 @@ import matplotlib.pyplot as plt
 
 st.title("Paragliding LC Lead Zone Calculator")
 
-# Ввід параметрів таску
-task_distance = st.number_input("Task distance (km)", min_value=10.0, max_value=300.0, value=41.6, step=0.1)
-lead_cut_km = st.number_input("Non-leading final segment (km)", min_value=0.0, max_value=20.0, value=5.0, step=0.1)
+# Ввід параметра — тільки довжина таску
+task_distance = st.number_input("Enter task distance (km)", min_value=10.0, max_value=300.0, value=41.6, step=0.1)
 
+# Автоматично відкидаємо останні 12% (типове в GAP — ~10–15%)
+lead_cut_km = task_distance * 0.12
 effective_distance = task_distance - lead_cut_km
 
-# Побудова кривої ваги
+st.markdown(f"🟡 Ignored final segment: **{lead_cut_km:.1f} km**  \n🟢 Effective leading zone length: **{effective_distance:.1f} km**")
+
+# Побудова кривої ваги (гаусова)
 x = np.linspace(0, effective_distance, 500)
 center = effective_distance / 2
 width = effective_distance / 2
 weights = np.exp(-((x - center)**2) / (2 * (width / 2.5)**2))
 
+# Область максимуму — 90% від піку
 threshold = 0.9 * np.max(weights)
 lead_zone = x[(weights >= threshold)]
 lead_zone_start = np.min(lead_zone)
 lead_zone_end = np.max(lead_zone)
 
-st.subheader("Optimal leading zone")
+st.subheader("🔶 Max Lead Points Zone")
 st.markdown(
-    f"**Maximum lead points accrue between:**  \n"
-    f":orange[**{lead_zone_start:.1f} km**] and :orange[**{lead_zone_end:.1f} km**] of the task"
+    f"**Best zone to lead:**  \n"
+    f":orange[**{lead_zone_start:.1f} km**] to :orange[**{lead_zone_end:.1f} km**] "
+    f"({lead_zone_end - lead_zone_start:.1f} km)"
 )
 
 # Побудова графіка
@@ -41,5 +46,5 @@ st.pyplot(fig)
 
 st.markdown(
     "This calculator estimates where in the task distance the maximum LC weight is applied.  \n"
-    "Values are based on a Gaussian model used in GAP scoring."
+    "The final part of the task (≈12%) is excluded from leading calculations automatically."
 )
